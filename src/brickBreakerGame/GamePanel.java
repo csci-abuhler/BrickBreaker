@@ -14,14 +14,16 @@ import javax.swing.JPanel;
 // class that extends JPanel, and where the main game will be updated
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
+
 	// ball fields
 	private final static int ballRadius = 20;
 	private static int ballX = (BrickBreaker.getLength() / 2) - (ballRadius / 2);
 	private static int ballY = BrickBreaker.getHeight() / 2;
 
 	// player paddle fields
-	private final static int paddleWidth = 80;
+	private final static int paddleWidth = 100;
 	private final static int paddleHeight = 30;
+	private final int paddleVelocity = 30;
 	private static int paddleX = (BrickBreaker.getLength() / 2) - paddleWidth / 2;
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
 
@@ -59,17 +61,21 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+
 	} // action performed
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			System.out.println("LEFT");
+			if (!(paddleX <= 0)) {
+				paddleX -= paddleVelocity;
+			} // if
 		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			System.out.println("RIGHT");
+			if (!(paddleX >= (BrickBreaker.getLength() - paddleWidth))) {
+				paddleX += paddleVelocity;
+			} // if
 		} // if
-		System.out.println(e.getKeyChar());
+		repaint();
 	} // key pressed
 
 	@Override
