@@ -3,17 +3,17 @@ package brickBreakerGame;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JPanel;
 
-// class that extends JPanel, and where the main game will be updated
+// Custom class that extends JPanel, and where the main game will be updated
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements KeyListener {
 
-	// ball fields
+	// Ball fields
 	private final static int ballRadius = 20;
 	private static int ballX = (BrickBreaker.getLength() / 2) - (ballRadius / 2);
 	private static int ballY = BrickBreaker.getHeight() / 2;
@@ -21,27 +21,28 @@ public class GamePanel extends JPanel implements KeyListener {
 	private int ballVelocityX = ballVelocity;
 	private int ballVelocityY = ballVelocity;	
 
-	// player paddle fields
+	// Player paddle fields
 	private final static int paddleWidth = 100;
 	private final static int paddleHeight = 30;
 	private final int paddleVelocity = 10;
 	private static int paddleX = (BrickBreaker.getLength() / 2) - paddleWidth / 2;
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
-
+	Rectangle paddle = new Rectangle(paddleX, paddleY, paddleWidth, paddleHeight);
+	
 	Thread thread;
 
-	// constructor
+	// Constructor
 	public GamePanel() {
-		// Allows for key input to be checked
+		// Below allows for key input to be checked
 		addKeyListener(this);
 
-		// Allows the focus to be set to the custom JPanel
+		// Below allows the focus to be set to the custom JPanel.
 		setFocusable(true);
 
-		// Allows the tab and shift + tab keys to be used. Currently disabled.
+		// Below allows the tab and shift + tab keys to be used. Currently disabled.
 		setFocusTraversalKeysEnabled(false);
 
-		// update ball position
+		// Below we update the position of the ball.
 		thread = new Thread(() -> {
 			do {
 				updateBallPosition();
@@ -56,20 +57,20 @@ public class GamePanel extends JPanel implements KeyListener {
 		thread.start();
 	} // constructor
 
-	// sets the size of the game board
+	// Below sets the size of the game board.
 	public Dimension getPreferredSize() {
 		return new Dimension(BrickBreaker.getLength(), BrickBreaker.getHeight());
 	} // get preferred size
 
-	// overridden paint component method
+	// Below is the overridden paint component method.
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		// the ball
+		// Draw the ball
 		g.setColor(Color.RED);
 		g.fillOval(ballX, ballY, ballRadius, ballRadius);
 
-		// the player's board
+		// Draw the player's board
 		g.setColor(Color.DARK_GRAY);
 		g.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
 
@@ -78,37 +79,40 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	// updates the position of the ball
 	public void updateBallPosition() {
-		// checking if the ball hits the walls
+		// Below checks if the ball hits the walls and ceiling and flips the ball velocity in the respective direction.
+		// Left wall
 		if (ballX <= 0) {
 			ballVelocityX *= -1;
 		} // if
 		
+		// Right wall
 		if (ballX >= (BrickBreaker.getLength() - ballRadius)) {
 			ballVelocityX *= -1;
 		} // if
 		
+		// Ceiling
 		if (ballY <= 0) {
 			ballVelocityY *= -1;
 		} // if
-		
+
+		// Below code is used to cause the ball to bounce off the floor. May be used later.
+		/*
 		if (ballY >= (BrickBreaker.getHeight() - ballRadius)) {
 			ballVelocityY *= -1;
 		} // if
-		 
-		// checking if the ball hits the paddle
-		if ((ballX >= paddleX) && (ballX <= paddleWidth) && (ballY >= paddleY)) {
-			//ballVelocityY *= -1;
-			System.out.println("Test");
+		*/
+
+		// Below checks if the ball hits the paddle.
+		if (paddle.contains(ballX, ballY + ballRadius)) {
+			ballVelocityY *= -1;
 		} // if
-		
-		//System.out.println("X: " + paddleX);
-		//System.out.println("Y: " + paddleY);
 
 		ballX += ballVelocityX;
-		ballY += ballVelocityY;
+		ballY += ballVelocityY;	
 	} // action performed
 
 	@Override
+	// Below checks user input and changes the movement of the paddle based on the input.
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			if (!(paddleX <= 0)) {
@@ -119,7 +123,7 @@ public class GamePanel extends JPanel implements KeyListener {
 				paddleX += paddleVelocity;
 			} // if
 		} // if
-
+		paddle.setBounds(paddleX, paddleY, paddleWidth, paddleHeight);
 		repaint();
 	} // key pressed
 

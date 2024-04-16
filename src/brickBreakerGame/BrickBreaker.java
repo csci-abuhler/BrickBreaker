@@ -5,19 +5,22 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+// Main class where the user interface is designed. 
 public class BrickBreaker {
 	private final static int boardLength = 500;
 	private final static int boardHeight = 800;
 
+	// Returns the board length.
 	public static int getLength() {
 		return boardLength;
 	} // length getter
 
+	// Returns the board height. 
 	public static int getHeight() {
 		return boardHeight;
 	} // height getter
 
-	// main method
+	// Main method that calls the user interface method.
 	public static void main(String args[]) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -26,6 +29,7 @@ public class BrickBreaker {
 		}); // SwingUtilities
 	} // main
 
+	// Method where the user interface is set up. 
 	public static void showUI() {
 		// Creating the frame
 		JFrame frame = new JFrame("BRICK BREAKER");
@@ -39,7 +43,7 @@ public class BrickBreaker {
 
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
-
+		
 		frame.pack();
 		frame.setVisible(true);
 	} // show UI
