@@ -32,7 +32,7 @@ public class BrickBreaker {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		GamePanel gp = new GamePanel();
-		gp.setBackground(Color.BLUE);
+		gp.setBackground(Color.BLACK);
 		
 		frame.add(gp);
 		frame.setSize(boardLength, boardHeight);

@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -13,19 +11,22 @@ import javax.swing.JPanel;
 
 // class that extends JPanel, and where the main game will be updated
 @SuppressWarnings("serial")
-public class GamePanel extends JPanel implements KeyListener, ActionListener {
+public class GamePanel extends JPanel implements KeyListener {
 
 	// ball fields
 	private final static int ballRadius = 20;
 	private static int ballX = (BrickBreaker.getLength() / 2) - (ballRadius / 2);
 	private static int ballY = BrickBreaker.getHeight() / 2;
+	private int ballVelocity = 5;
 
 	// player paddle fields
 	private final static int paddleWidth = 100;
 	private final static int paddleHeight = 30;
-	private final int paddleVelocity = 30;
+	private final int paddleVelocity = 10;
 	private static int paddleX = (BrickBreaker.getLength() / 2) - paddleWidth / 2;
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
+
+	Thread thread;
 
 	// constructor
 	public GamePanel() {
@@ -37,6 +38,20 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
 		// Allows the tab and shift + tab keys to be used. Currently disabled.
 		setFocusTraversalKeysEnabled(false);
+
+		// update ball position
+		thread = new Thread(() -> {
+			do {
+				updateBallPosition();
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException ie) {
+					ie.printStackTrace();
+				} // try catch
+				repaint();
+			} while (true);
+		}); // thread
+		thread.start();
 	} // constructor
 
 	// sets the size of the game board
@@ -59,9 +74,17 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		g.dispose();
 	} // paintComponent
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
+	// updates the position of the ball
+	public void updateBallPosition() {
+		if ((ballX >= BrickBreaker.getLength() - ballRadius)) {
+			ballVelocity *= -1;
+		} // if
+		
+		if (ballX <= 0) {
+			ballVelocity *= -1;
+		} // if
+		
+		ballX += ballVelocity;
 	} // action performed
 
 	@Override
@@ -75,6 +98,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				paddleX += paddleVelocity;
 			} // if
 		} // if
+
 		repaint();
 	} // key pressed
 
