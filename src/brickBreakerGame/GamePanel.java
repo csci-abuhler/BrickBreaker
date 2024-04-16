@@ -18,11 +18,13 @@ public class GamePanel extends JPanel implements KeyListener {
 	private static int ballX = (BrickBreaker.getLength() / 2) - (ballRadius / 2);
 	private static int ballY = BrickBreaker.getHeight() / 2;
 	private int ballVelocity = 5;
+	private int ballVelocityX = ballVelocity;
+	private int ballVelocityY = ballVelocity;	
 
 	// player paddle fields
 	private final static int paddleWidth = 100;
 	private final static int paddleHeight = 30;
-	private final int paddleVelocity = 10;
+	private final int paddleVelocity = 15;
 	private static int paddleX = (BrickBreaker.getLength() / 2) - paddleWidth / 2;
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
 
@@ -76,15 +78,24 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	// updates the position of the ball
 	public void updateBallPosition() {
-		if ((ballX >= BrickBreaker.getLength() - ballRadius)) {
-			ballVelocity *= -1;
-		} // if
-		
 		if (ballX <= 0) {
-			ballVelocity *= -1;
+			ballVelocityX *= -1;
 		} // if
 		
-		ballX += ballVelocity;
+		if (ballX >= (BrickBreaker.getLength() - ballRadius)) {
+			ballVelocityX *= -1;
+		} // if
+		
+		if (ballY <= 0) {
+			ballVelocityY *= -1;
+		} // if
+		
+		if (ballY >= (BrickBreaker.getHeight() - ballRadius)) {
+			ballVelocityY *= -1;
+		} // if
+		 
+		ballX += ballVelocityX;
+		ballY += ballVelocityY;
 	} // action performed
 
 	@Override
