@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	// player paddle fields
 	private final static int paddleWidth = 100;
 	private final static int paddleHeight = 30;
-	private final int paddleVelocity = 15;
+	private final int paddleVelocity = 10;
 	private static int paddleX = (BrickBreaker.getLength() / 2) - paddleWidth / 2;
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
 
@@ -78,6 +78,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	// updates the position of the ball
 	public void updateBallPosition() {
+		// checking if the ball hits the walls
 		if (ballX <= 0) {
 			ballVelocityX *= -1;
 		} // if
@@ -94,6 +95,15 @@ public class GamePanel extends JPanel implements KeyListener {
 			ballVelocityY *= -1;
 		} // if
 		 
+		// checking if the ball hits the paddle
+		if ((ballX >= paddleX) && (ballX <= paddleWidth) && (ballY >= paddleY)) {
+			//ballVelocityY *= -1;
+			System.out.println("Test");
+		} // if
+		
+		//System.out.println("X: " + paddleX);
+		//System.out.println("Y: " + paddleY);
+
 		ballX += ballVelocityX;
 		ballY += ballVelocityY;
 	} // action performed
