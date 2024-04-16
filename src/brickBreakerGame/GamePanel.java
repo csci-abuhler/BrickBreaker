@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -17,9 +18,10 @@ public class GamePanel extends JPanel implements KeyListener {
 	private final static int ballRadius = 20;
 	private static int ballX = (BrickBreaker.getLength() / 2) - (ballRadius / 2);
 	private static int ballY = BrickBreaker.getHeight() / 2;
-	private int ballVelocity = 5;
-	private int ballVelocityX = ballVelocity;
-	private int ballVelocityY = ballVelocity;	
+	private final int ballVelocity = 5;
+	private int ballVelocityX = generateVelocity();
+	private int ballVelocityY = generateVelocity();
+	private boolean begin = false;
 
 	// Player paddle fields
 	private final static int paddleWidth = 100;
@@ -28,7 +30,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	private static int paddleX = (BrickBreaker.getLength() / 2) - paddleWidth / 2;
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
 	Rectangle paddle = new Rectangle(paddleX, paddleY, paddleWidth, paddleHeight);
-	
+
 	Thread thread;
 
 	// Constructor
@@ -57,6 +59,14 @@ public class GamePanel extends JPanel implements KeyListener {
 		thread.start();
 	} // constructor
 
+	// Below will be used to pick a random direction for the ball to go in upon
+	// startup.
+	public int generateVelocity() {
+		Random n = new Random();
+		int[] pick = { -ballVelocity, ballVelocity };
+		return pick[n.nextInt(2)];
+	} // generate Velocity
+
 	// Below sets the size of the game board.
 	public Dimension getPreferredSize() {
 		return new Dimension(BrickBreaker.getLength(), BrickBreaker.getHeight());
@@ -71,7 +81,7 @@ public class GamePanel extends JPanel implements KeyListener {
 		g.fillOval(ballX, ballY, ballRadius, ballRadius);
 
 		// Draw the player's board
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(Color.GREEN);
 		g.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
 
 		g.dispose();
@@ -79,41 +89,50 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	// updates the position of the ball
 	public void updateBallPosition() {
-		// Below checks if the ball hits the walls and ceiling and flips the ball velocity in the respective direction.
+		// Below checks if the ball hits the walls and ceiling and flips the ball
+		// velocity in the respective direction.
 		// Left wall
 		if (ballX <= 0) {
 			ballVelocityX *= -1;
 		} // if
-		
+
 		// Right wall
 		if (ballX >= (BrickBreaker.getLength() - ballRadius)) {
 			ballVelocityX *= -1;
 		} // if
-		
+
 		// Ceiling
 		if (ballY <= 0) {
 			ballVelocityY *= -1;
 		} // if
 
-		// Below code is used to cause the ball to bounce off the floor. May be used later.
+		// Below code is used to cause the ball to bounce off the floor. May be used
+		// later.
 		/*
-		if (ballY >= (BrickBreaker.getHeight() - ballRadius)) {
-			ballVelocityY *= -1;
-		} // if
-		*/
+		 * if (ballY >= (BrickBreaker.getHeight() - ballRadius)) { ballVelocityY *= -1;
+		 * } // if
+		 */
 
 		// Below checks if the ball hits the paddle.
 		if (paddle.contains(ballX, ballY + ballRadius)) {
 			ballVelocityY *= -1;
 		} // if
 
-		ballX += ballVelocityX;
-		ballY += ballVelocityY;	
+		// Start moving the ball when enter is pressed.
+		if (begin) {
+			ballX += ballVelocityX;
+			ballY += ballVelocityY;
+		} // if
 	} // action performed
 
 	@Override
-	// Below checks user input and changes the movement of the paddle based on the input.
+	// Below checks user input and changes the movement of the paddle based on the
+	// input.
 	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			begin = true;
+		} // if
+
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			if (!(paddleX <= 0)) {
 				paddleX -= paddleVelocity;
