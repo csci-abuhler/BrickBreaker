@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -31,8 +32,16 @@ public class GamePanel extends JPanel implements KeyListener {
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
 	Rectangle paddle = new Rectangle(paddleX, paddleY, paddleWidth, paddleHeight);
 
+	// Thread made for the ball
 	Thread thread;
 
+	// The bricks of the wall in an array
+	ArrayList<Rectangle> wall = new ArrayList<Rectangle>();
+	
+	// Fields for the bricks of the wall
+	private final static int brickWidth = 50;
+	private final static int brickHeight = 20;
+	
 	// Constructor
 	public GamePanel() {
 		// Below allows for key input to be checked
@@ -84,6 +93,9 @@ public class GamePanel extends JPanel implements KeyListener {
 		g.setColor(Color.GREEN);
 		g.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
 
+		// Draw the wall
+		setWall(wall, g);
+		
 		g.dispose();
 	} // paintComponent
 
@@ -125,6 +137,21 @@ public class GamePanel extends JPanel implements KeyListener {
 		} // if
 	} // action performed
 
+	// Setting up the blocks for the ball to hit
+	public void setWall(ArrayList<Rectangle> rectangle, Graphics g) {
+		int spaces = 10;
+		
+		for (int i = spaces; i < BrickBreaker.getLength() - spaces; i += brickWidth) {
+			//for (int j = spaces; j < ((BrickBreaker.getHeight() / 4)); j += brickHeight) {
+				wall.add(new Rectangle(i, 0, brickWidth, brickHeight));
+				g.setColor(Color.ORANGE);
+				g.fillRect(i, 0, brickWidth, brickHeight);
+				i += spaces;
+				//j += spaces;
+			//} // for
+		} // for
+	} // set Wall
+	
 	@Override
 	// Below checks user input and changes the movement of the paddle based on the
 	// input.
