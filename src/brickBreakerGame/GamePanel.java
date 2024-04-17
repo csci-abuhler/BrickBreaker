@@ -41,6 +41,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	// Fields for the bricks of the wall
 	private final static int brickWidth = 50;
 	private final static int brickHeight = 20;
+	private boolean resetWall = true;
 	
 	// Constructor
 	public GamePanel() {
@@ -103,6 +104,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	public void updateBallPosition() {
 		// Below checks if the ball hits the walls and ceiling and flips the ball
 		// velocity in the respective direction.
+		
 		// Left wall
 		if (ballX <= 0) {
 			ballVelocityX *= -1;
@@ -142,13 +144,13 @@ public class GamePanel extends JPanel implements KeyListener {
 		int spaces = 10;
 		
 		for (int i = spaces; i < BrickBreaker.getLength() - spaces; i += brickWidth) {
-			//for (int j = spaces; j < ((BrickBreaker.getHeight() / 4)); j += brickHeight) {
-				wall.add(new Rectangle(i, 0, brickWidth, brickHeight));
+			for (int j = spaces; j < ((BrickBreaker.getHeight() / 4)); j += brickHeight) {
+				wall.add(new Rectangle(i, j, brickWidth, brickHeight));
 				g.setColor(Color.ORANGE);
-				g.fillRect(i, 0, brickWidth, brickHeight);
-				i += spaces;
-				//j += spaces;
-			//} // for
+				g.fillRect(i, j, brickWidth, brickHeight);
+				j += spaces;
+			} // for
+			i += spaces;
 		} // for
 	} // set Wall
 	
