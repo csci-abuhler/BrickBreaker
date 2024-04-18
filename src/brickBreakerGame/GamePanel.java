@@ -36,12 +36,11 @@ public class GamePanel extends JPanel implements KeyListener {
 	Thread thread;
 
 	// The bricks of the wall in an array
-	ArrayList<Rectangle> wall = new ArrayList<Rectangle>();
+	Rectangle[][] wall = new Rectangle[BrickBreaker.getLength()][BrickBreaker.getHeight()];
 	
 	// Fields for the bricks of the wall
 	private final static int brickWidth = 50;
 	private final static int brickHeight = 20;
-	private boolean resetWall = true;
 	
 	// Constructor
 	public GamePanel() {
@@ -95,16 +94,14 @@ public class GamePanel extends JPanel implements KeyListener {
 		g.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
 
 		// Draw the wall
-		setWall(wall, g);
+		setWall(g);
 		
 		g.dispose();
 	} // paintComponent
 
 	// updates the position of the ball
 	public void updateBallPosition() {
-		// Below checks if the ball hits the walls and ceiling and flips the ball
-		// velocity in the respective direction.
-		
+		// Below checks if the ball hits the walls and ceiling and flips the ball velocity in the respective direction.
 		// Left wall
 		if (ballX <= 0) {
 			ballVelocityX *= -1;
@@ -140,12 +137,12 @@ public class GamePanel extends JPanel implements KeyListener {
 	} // action performed
 
 	// Setting up the blocks for the ball to hit
-	public void setWall(ArrayList<Rectangle> rectangle, Graphics g) {
+	public void setWall(Graphics g) {
 		int spaces = 10;
 		
 		for (int i = spaces; i < BrickBreaker.getLength() - spaces; i += brickWidth) {
 			for (int j = spaces; j < ((BrickBreaker.getHeight() / 4)); j += brickHeight) {
-				wall.add(new Rectangle(i, j, brickWidth, brickHeight));
+				wall[i][j] = new Rectangle(i, j, brickWidth, brickHeight);
 				g.setColor(Color.ORANGE);
 				g.fillRect(i, j, brickWidth, brickHeight);
 				j += spaces;
