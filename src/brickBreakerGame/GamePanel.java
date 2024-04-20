@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -36,7 +35,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	Thread thread;
 
 	// The bricks of the wall in an array
-	Rectangle[][] wall = new Rectangle[BrickBreaker.getLength()][BrickBreaker.getHeight()];
+	Rectangle[][] wall = new Rectangle[8][7];
 	
 	// Fields for the bricks of the wall
 	private final static int brickWidth = 50;
@@ -139,15 +138,18 @@ public class GamePanel extends JPanel implements KeyListener {
 	// Setting up the blocks for the ball to hit
 	public void setWall(Graphics g) {
 		int spaces = 10;
+		int calculateX = spaces;
+		int calculateY = 0;
 		
-		for (int i = spaces; i < BrickBreaker.getLength() - spaces; i += brickWidth) {
-			for (int j = spaces; j < ((BrickBreaker.getHeight() / 4)); j += brickHeight) {
-				wall[i][j] = new Rectangle(i, j, brickWidth, brickHeight);
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 7; j++) {
+				wall[i][j] = new Rectangle(calculateX, calculateY, brickWidth, brickHeight);
 				g.setColor(Color.ORANGE);
-				g.fillRect(i, j, brickWidth, brickHeight);
-				j += spaces;
+				g.fillRect(calculateX, calculateY, brickWidth, brickHeight);
+				calculateY += 30;
 			} // for
-			i += spaces;
+			calculateY = 0;
+			calculateX += 60;
 		} // for
 	} // set Wall
 	
