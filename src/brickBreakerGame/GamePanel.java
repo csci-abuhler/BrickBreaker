@@ -54,6 +54,13 @@ public class GamePanel extends JPanel implements KeyListener {
 
 		// Below we update the position of the ball.
 		thread = new Thread(() -> {
+			// Delay the thread until the wall is initialized.
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} // try catch
+			
 			do {
 				updateBallPosition();
 				try {
@@ -64,6 +71,8 @@ public class GamePanel extends JPanel implements KeyListener {
 				repaint();
 			} while (true);
 		}); // thread
+
+		// Start the thread.
 		thread.start();
 	} // constructor
 
@@ -123,6 +132,10 @@ public class GamePanel extends JPanel implements KeyListener {
 		 * } // if
 		 */
 
+		if (wall[0][0].contains(ballX, ballY)) {
+			System.out.println("GOTCHA");
+		} // if
+		
 		// Below checks if the ball hits the paddle.
 		if (paddle.contains(ballX, ballY + ballRadius)) {
 			ballVelocityY *= -1;
