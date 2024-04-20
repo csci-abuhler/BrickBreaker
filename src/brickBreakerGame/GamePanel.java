@@ -18,15 +18,16 @@ public class GamePanel extends JPanel implements KeyListener {
 	private final static int ballRadius = 20;
 	private static int ballX = (BrickBreaker.getLength() / 2) - (ballRadius / 2);
 	private static int ballY = BrickBreaker.getHeight() / 2;
-	private final int ballVelocity = 5;
+	private final int ballVelocity = 1;
 	private int ballVelocityX = generateVelocity();
 	private int ballVelocityY = generateVelocity();
 	private boolean begin = false;
+	private int counter = 0;
 
 	// Player paddle fields
 	private final static int paddleWidth = 100;
 	private final static int paddleHeight = 30;
-	private final int paddleVelocity = 10;
+	private final int paddleVelocity = 20;
 	private static int paddleX = (BrickBreaker.getLength() / 2) - paddleWidth / 2;
 	private static int paddleY = BrickBreaker.getHeight() - paddleHeight;
 	Rectangle paddle = new Rectangle(paddleX, paddleY, paddleWidth, paddleHeight);
@@ -34,13 +35,17 @@ public class GamePanel extends JPanel implements KeyListener {
 	// Thread made for the ball
 	Thread thread;
 
-	// The bricks of the wall in an array
-	Rectangle[][] wall = new Rectangle[8][7];
-	
+	// The bricks of the wall in an array as well as the width and height fields
+	private final int wallWidth = 8;
+	private final int wallHeight = 7;
+	Rectangle[] wall = new Rectangle[wallWidth * wallHeight];
+	Rectangle[][] drawnWall = new Rectangle[wallWidth][wallHeight];
+	private boolean initializeWall = true;
+
 	// Fields for the bricks of the wall
 	private final static int brickWidth = 50;
 	private final static int brickHeight = 20;
-	
+
 	// Constructor
 	public GamePanel() {
 		// Below allows for key input to be checked
@@ -54,21 +59,14 @@ public class GamePanel extends JPanel implements KeyListener {
 
 		// Below we update the position of the ball.
 		thread = new Thread(() -> {
-			// Delay the thread until the wall is initialized.
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} // try catch
-			
 			do {
 				updateBallPosition();
+
 				try {
-					Thread.sleep(10);
-				} catch (InterruptedException ie) {
-					ie.printStackTrace();
+					Thread.sleep(ballVelocity);
+				} catch (InterruptedException err) {
+					err.printStackTrace();
 				} // try catch
-				repaint();
 			} while (true);
 		}); // thread
 
@@ -102,14 +100,39 @@ public class GamePanel extends JPanel implements KeyListener {
 		g.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
 
 		// Draw the wall
-		setWall(g);
-		
+		if (initializeWall) {
+			setWall();
+			initializeWall = false;
+		} // if
+
+		displayWall(g);
+
 		g.dispose();
 	} // paintComponent
 
 	// updates the position of the ball
 	public void updateBallPosition() {
-		// Below checks if the ball hits the walls and ceiling and flips the ball velocity in the respective direction.
+		// Start moving the ball when enter is pressed.
+		if (begin) {
+			ballX += ballVelocityX;
+			ballY += ballVelocityY;
+
+			// Below checks if the ball intersects one the wall blocks and removes it from
+			// the board if true.
+			for (int i = 0; i < wall.length; i++) {
+				if (wall[i].contains(ballX, ballY)) {
+					wall[i].x = -brickWidth;
+					wall[i].y = -brickHeight;
+					counter++;
+					System.out.println(counter);
+				} // if
+			} // for
+		} // if
+
+		/*
+		 * Below checks if the ball hits the walls and ceiling and flips the ball
+		 * velocity in the respective direction.
+		 */
 		// Left wall
 		if (ballX <= 0) {
 			ballVelocityX *= -1;
@@ -125,52 +148,70 @@ public class GamePanel extends JPanel implements KeyListener {
 			ballVelocityY *= -1;
 		} // if
 
-		// Below code is used to cause the ball to bounce off the floor. May be used
-		// later.
 		/*
-		 * if (ballY >= (BrickBreaker.getHeight() - ballRadius)) { ballVelocityY *= -1;
-		 * } // if
+		 * Below code is used to cause the ball to bounce off the floor. It will likely
+		 * be commented out later.
 		 */
-
-		if (wall[0][0].contains(ballX, ballY)) {
-			System.out.println("GOTCHA");
+		if (ballY >= (BrickBreaker.getHeight() - ballRadius)) {
+			ballVelocityY *= -1;
 		} // if
-		
+
 		// Below checks if the ball hits the paddle.
 		if (paddle.contains(ballX, ballY + ballRadius)) {
 			ballVelocityY *= -1;
 		} // if
 
-		// Start moving the ball when enter is pressed.
-		if (begin) {
-			ballX += ballVelocityX;
-			ballY += ballVelocityY;
-		} // if
+		repaint();
 	} // action performed
 
 	// Setting up the blocks for the ball to hit
-	public void setWall(Graphics g) {
+	// public void setWall(Graphics g) {
+	public void setWall() {
 		int spaces = 10;
 		int calculateX = spaces;
 		int calculateY = 0;
-		
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 7; j++) {
-				wall[i][j] = new Rectangle(calculateX, calculateY, brickWidth, brickHeight);
-				g.setColor(Color.ORANGE);
-				g.fillRect(calculateX, calculateY, brickWidth, brickHeight);
+		int index = 0;
+		drawnWall = new Rectangle[wallWidth][wallHeight];
+
+		for (int i = 0; i < wallWidth; i++) {
+			for (int j = 0; j < wallHeight; j++) {
+				drawnWall[i][j] = new Rectangle(calculateX, calculateY, brickWidth, brickHeight);
 				calculateY += 30;
 			} // for
 			calculateY = 0;
 			calculateX += 60;
 		} // for
+
+		// Place the bricks into the wall array for them to be checked for intersection
+		// with the ball.
+		for (int i = 0; i < wallWidth; i++) {
+			for (int j = 0; j < wallHeight; j++) {
+				wall[index] = drawnWall[i][j];
+				index++;
+			} // for
+		} // for
 	} // set Wall
-	
+
+	/*
+	 * Below displays the wall to the board.
+	 */
+	public void displayWall(Graphics g) {
+		for (int i = 0; i < wallWidth; i++) {
+			for (int j = 0; j < wallHeight; j++) {
+				if (drawnWall[i][j] != null) {
+					g.setColor(Color.ORANGE);
+					g.fillRect(drawnWall[i][j].x, drawnWall[i][j].y, brickWidth, brickHeight);
+				} // if
+			} // for
+		} // for
+	} // displayWall
+
 	@Override
 	// Below checks user input and changes the movement of the paddle based on the
 	// input.
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			System.out.println("ENTER PRESSED");
 			begin = true;
 		} // if
 
@@ -184,7 +225,6 @@ public class GamePanel extends JPanel implements KeyListener {
 			} // if
 		} // if
 		paddle.setBounds(paddleX, paddleY, paddleWidth, paddleHeight);
-		repaint();
 	} // key pressed
 
 	@Override
