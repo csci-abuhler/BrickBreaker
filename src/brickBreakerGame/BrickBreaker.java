@@ -11,12 +11,12 @@ public class BrickBreaker {
 	private final static int boardHeight = 800;
 
 	// Returns the board length.
-	public static int getLength() {
+	protected static int getLength() {
 		return boardLength;
 	} // length getter
 
 	// Returns the board height. 
-	public static int getHeight() {
+	protected static int getHeight() {
 		return boardHeight;
 	} // height getter
 
@@ -30,7 +30,7 @@ public class BrickBreaker {
 	} // main
 
 	// Method where the user interface is set up. 
-	public static void showUI() {
+	protected static void showUI() {
 		// Creating the frame
 		JFrame frame = new JFrame("BRICK BREAKER");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

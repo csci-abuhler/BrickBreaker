@@ -47,7 +47,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	private final static int brickHeight = 20;
 
 	// Constructor
-	public GamePanel() {
+	protected GamePanel() {
 		// Below allows for key input to be checked
 		addKeyListener(this);
 
@@ -76,7 +76,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	// Below will be used to pick a random direction for the ball to go in upon
 	// startup.
-	public int generateVelocity() {
+	protected int generateVelocity() {
 		Random n = new Random();
 		int[] pick = { -ballVelocity, ballVelocity };
 		return pick[n.nextInt(2)];
@@ -111,7 +111,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	} // paintComponent
 
 	// updates the position of the ball
-	public void updateBallPosition() {
+	protected void updateBallPosition() {
 		// Start moving the ball when enter is pressed.
 		if (begin) {
 			ballX += ballVelocityX;
@@ -165,8 +165,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	} // action performed
 
 	// Setting up the blocks for the ball to hit
-	// public void setWall(Graphics g) {
-	public void setWall() {
+	protected void setWall() {
 		int spaces = 10;
 		int calculateX = spaces;
 		int calculateY = 0;
@@ -195,7 +194,7 @@ public class GamePanel extends JPanel implements KeyListener {
 	/*
 	 * Below displays the wall to the board.
 	 */
-	public void displayWall(Graphics g) {
+	protected void displayWall(Graphics g) {
 		for (int i = 0; i < wallWidth; i++) {
 			for (int j = 0; j < wallHeight; j++) {
 				if (drawnWall[i][j] != null) {
@@ -229,11 +228,11 @@ public class GamePanel extends JPanel implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+
 	} // key released
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+
 	} // key typed
 } // class
