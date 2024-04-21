@@ -61,7 +61,6 @@ public class GamePanel extends JPanel implements KeyListener {
 		thread = new Thread(() -> {
 			do {
 				updateBallPosition();
-
 				try {
 					Thread.sleep(ballVelocity);
 				} catch (InterruptedException err) {
