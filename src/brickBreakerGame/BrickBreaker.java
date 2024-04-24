@@ -102,5 +102,6 @@ public class BrickBreaker implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-	} // action performed
+		
+	} // actionPerformed
 } // class

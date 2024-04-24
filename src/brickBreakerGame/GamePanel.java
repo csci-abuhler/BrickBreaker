@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 // Custom class that extends JPanel, and where the main game will be updated
@@ -123,7 +124,6 @@ public class GamePanel extends JPanel implements KeyListener {
 					wall[i].x = -brickWidth;
 					wall[i].y = -brickHeight;
 					counter++;
-					System.out.println(counter);
 				} // if
 			} // for
 		} // if
@@ -147,20 +147,30 @@ public class GamePanel extends JPanel implements KeyListener {
 			ballVelocityY *= -1;
 		} // if
 
-		// Restart game if ball falls through the floor.
-		if (ballY >= (BrickBreaker.getHeight() - ballRadius)) {
-			//BrickBreaker.changeScreen();
-			//ballVelocityY *= -1;
+		// End the game if ball falls through the floor or all blocks are destroyed.
+		if ((ballY >= (BrickBreaker.getHeight() - ballRadius))) {
+			GamePanel.infoBox("YOU JUST LOST THE GAME!", "LOSE!");
+		} else if (counter == (wallWidth * wallHeight)) {
+			GamePanel.infoBox("YOU WON THE GAME!", "WIN!");
 		} // if
-		
-		
-		// Below checks if the ball hits the paddle.
-		if (paddle.contains(ballX, ballY + ballRadius)) {
+
+		// Next few if statements check if the ball hits the paddle.
+		if ((paddle.contains(ballX - ballRadius, ballY)) || (paddle.contains(ballX + ballRadius, ballY))) {
+			ballVelocityX *= -1;
+		} // if
+
+		if ((paddle.contains(ballX, ballY + ballRadius)) || (paddle.contains(ballX, ballY - ballRadius))) {
 			ballVelocityY *= -1;
 		} // if
 
 		repaint();
 	} // action performed
+
+	// Method used to pop a message on the screen when a specific event occurs.
+	public static void infoBox(String infoMessage, String titleBar) {
+		JOptionPane.showMessageDialog(null, infoMessage, titleBar, JOptionPane.INFORMATION_MESSAGE);
+		System.exit(0);
+	} // info box
 
 	// Setting up the blocks for the ball to hit
 	protected void setWall() {
@@ -189,9 +199,7 @@ public class GamePanel extends JPanel implements KeyListener {
 		} // for
 	} // set Wall
 
-	/*
-	 * Below displays the wall to the board.
-	 */
+	// Below displays the wall to the board.
 	protected void displayWall(Graphics g) {
 		for (int i = 0; i < wallWidth; i++) {
 			for (int j = 0; j < wallHeight; j++) {
@@ -208,7 +216,6 @@ public class GamePanel extends JPanel implements KeyListener {
 	// input.
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			System.out.println("ENTER PRESSED");
 			begin = true;
 		} // if
 
