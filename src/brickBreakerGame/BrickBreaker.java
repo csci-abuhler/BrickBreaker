@@ -63,6 +63,7 @@ public class BrickBreaker implements ActionListener {
 		JMenuItem start = new JMenuItem("Start");
 		JMenuItem exit = new JMenuItem("Exit");
 
+		// Action listeners are added.
 		start.addActionListener(e -> begin(e));
 		exit.addActionListener(e -> exit(e));
 
@@ -71,6 +72,7 @@ public class BrickBreaker implements ActionListener {
 
 		menuBar.add(menu);
 
+		// The menu bar is set to be visible.
 		frame.setJMenuBar(menuBar);
 		menuBar.setVisible(true);
 

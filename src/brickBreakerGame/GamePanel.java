@@ -147,14 +147,12 @@ public class GamePanel extends JPanel implements KeyListener {
 			ballVelocityY *= -1;
 		} // if
 
-		/*
-		 * Below code is used to cause the ball to bounce off the floor. It will likely
-		 * be commented out later.
-		 *
+		// Restart game if ball falls through the floor.
 		if (ballY >= (BrickBreaker.getHeight() - ballRadius)) {
-			ballVelocityY *= -1;
+			//BrickBreaker.changeScreen();
+			//ballVelocityY *= -1;
 		} // if
-		*/
+		
 		
 		// Below checks if the ball hits the paddle.
 		if (paddle.contains(ballX, ballY + ballRadius)) {
